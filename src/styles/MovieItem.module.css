@@ -1,0 +1,35 @@
+.movieItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+.movieItem img {
+    width: 100px;
+    height: 150px;
+    margin-right: 20px;
+    border-radius: 8px;
+}
+
+.starred {
+    background-color: #fffbe6;
+}
+
+.starButton {
+    margin-left: auto;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #0070f3;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.starButton:hover {
+    background-color: #0050b3;
+}
