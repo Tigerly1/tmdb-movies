@@ -33,3 +33,54 @@
 .starButton:hover {
     background-color: #0050b3;
 }
+
+@keyframes slideFromTopLeft {
+    from {
+      opacity: 0;
+      transform: translate(-100%, -100%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+  }
+  
+  @keyframes slideFromTopRight {
+    from {
+      opacity: 0;
+      transform: translate(100%, -100%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+  }
+  
+  @keyframes slideFromBottomLeft {
+    from {
+      opacity: 0;
+      transform: translate(-100%, 100%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+  }
+  
+  @keyframes slideFromBottomRight {
+    from {
+      opacity: 0;
+      transform: translate(100%, 100%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+  }
+  
+  .movie-card {
+    position: relative;
+    animation-duration: 10s;
+    animation-fill-mode: both;
+  }
+  

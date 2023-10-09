@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+
 interface MovieItemProps {
   movie: {
     id: number;
@@ -11,15 +13,36 @@ interface MovieItemProps {
   toggleStar: (id: number) => void;
 }
 
+const animations : string = "animate-slideFromTopRight animate-slideFromTopLeft animate-slideFromBottomRight animate-slideFromBottomLeft"
+
 const MovieItem: React.FC<MovieItemProps> = ({
   movie,
   isStarred,
   isRowStarred,
   toggleStar,
 }) => {
+  const cardRef = useRef(null);
+
+  useEffect(() => {
+    const animations = [
+      "slideFromTopLeft",
+      "slideFromTopRight",
+      "slideFromBottomLeft",
+      "slideFromBottomRight",
+    ];
+    const randomAnimation =
+      animations[Math.floor(Math.random() * animations.length)];
+
+    const cardElement: any = cardRef.current;
+    
+    cardElement.style.animationName = randomAnimation;
+    cardElement.style.animationDuration = Math.random() + 's'
+  }, []);
+
   return (
     <div
-      className={`relative flex flex-col p-4 mb-4 rounded shadow-lg hover:shadow-xl transition-shadow ${
+      ref={cardRef}
+      className={`relative ${animations} flex flex-col p-4 mb-4 rounded shadow-lg hover:shadow-xl transition-shadow ${
         isStarred
           ? "bg-yellow-300"
           : isRowStarred

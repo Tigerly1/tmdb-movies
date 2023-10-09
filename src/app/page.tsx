@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+"use client";
+
+import { useEffect, useState, FC } from "react";
 import MovieList from "../components/MovieList";
 import "../app/globals.css";
 import useWindowWidth from "@/helpers/highlights/MoviesInRow";
-import { env } from "process";
+import axios from "axios";
+import fetcher from "@/helpers/network/fetcher";
+import useSWR, { mutate } from "swr";
+import useSWRInfinite from "swr/infinite";
 
-const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
-const BASE_URL = "https://api.themoviedb.org/3";
 const BREAKPOINTS = {
   MD: 768,
   LG: 1024,
@@ -28,14 +31,56 @@ interface StarredMovies {
   [key: number]: boolean;
 }
 
-const HomePage = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+interface MovieListProps {
+  movies: Movie[];
+  starredMovies: StarredMovies;
+  toggleStar: (id: number) => void;
+  moviesPerRow: number;
+}
+
+const HomePage: FC = () => {
+  // const [movies, setMovies] = useState<Movie[]>([]);
   const [starredMovies, setStarredMovies] = useState<StarredMovies>({});
   const [loading, setLoading] = useState<boolean>(true);
+  const [sortOrder, setSortOrder] = useState<keyof typeof SORT_ORDER>("DESC");
 
   const windowWidth = useWindowWidth();
 
-  // Determine the number of movies displayed per row based on screen width
+  const getKey = (pageIndex: number, previousPageData: Movie[]) => {
+    // reached the end
+    if (previousPageData && previousPageData.length === 0) return null;
+
+    // first page, no previousPageData
+    if (pageIndex === 0) return `/api/movies?page=1&sort=${sortOrder}`;
+
+    // add the next page
+    return `/api/movies?page=${pageIndex + 1}&sort=${sortOrder}`;
+  };
+
+  const { data, error, size, setSize, mutate } = useSWRInfinite(
+    getKey,
+    fetcher
+  );
+
+  const movies = data ? [].concat(...data) : [];
+  const isLoadingInitialData = !data && !error;
+  const isLoadingMore =
+    isLoadingInitialData ||
+    (size > 0 && data && typeof data[size - 1] === "undefined");
+
+  const sortMovies = (order: keyof typeof SORT_ORDER) => {
+    setSortOrder(order);
+  };
+
+  useEffect(() => {
+    setLoading(false)
+  }, [data])
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    mutate();
+  }, [sortOrder, mutate]);
+
   const getMoviesPerRow = (): number => {
     if (windowWidth >= BREAKPOINTS.XL) return 5;
     if (windowWidth >= BREAKPOINTS.LG) return 4;
@@ -43,52 +88,10 @@ const HomePage = () => {
     return 2;
   };
 
-  useEffect(() => {
-    setLoading(true); // Start loading
-
-    const fetchMovies = async () => {
-      const allMovies: Movie[] = [];
-
-      try {
-        const promises = Array.from({ length: 25 }).map((_, index) =>
-          fetch(
-            `${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US&page=${
-              index + 1
-            }`
-          ).then((response) => response.json())
-        );
-
-        const results = await Promise.all(promises);
-        results.forEach((data) => allMovies.push(...data.results));
-        setMovies(allMovies);
-      } catch (error) {
-        console.error("Error fetching movies:", error);
-      }
-
-      setLoading(false); // End loading after data is fetched
-
-      const savedStarredMovies = localStorage.getItem("starredMovies");
-      if (savedStarredMovies) {
-        setStarredMovies(JSON.parse(savedStarredMovies));
-      }
-    };
-
-    fetchMovies();
-  }, []);
-
   const toggleStar = (id: number) => {
     const newStarred = { ...starredMovies, [id]: !starredMovies[id] };
     setStarredMovies(newStarred);
     localStorage.setItem("starredMovies", JSON.stringify(newStarred));
-  };
-
-  const sortMovies = (order: keyof typeof SORT_ORDER) => {
-    const sorted = [...movies].sort((a, b) => {
-      return order === SORT_ORDER.ASC
-        ? a.vote_average - b.vote_average
-        : b.vote_average - a.vote_average;
-    });
-    setMovies(sorted);
   };
 
   return (
@@ -122,6 +125,14 @@ const HomePage = () => {
             toggleStar={toggleStar}
             moviesPerRow={getMoviesPerRow()}
           />
+          {isLoadingMore? null:  <button
+            disabled={isLoadingMore}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition-colors"
+            onClick={() => setSize(size + 1)}
+          >
+            {isLoadingMore ? "Loading..." : "Show More"}
+          </button>}
+         
         </>
       )}
     </div>
