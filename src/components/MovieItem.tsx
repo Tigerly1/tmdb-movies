@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import Image from 'next/image'
 
 interface MovieItemProps {
   movie: {
@@ -64,8 +65,10 @@ const MovieItem: React.FC<MovieItemProps> = ({
       </button>
 
       {/* Rest of the card content */}
-      <img
+      <Image
         className="w-28 h-40 mb-4 mx-auto rounded shadow"
+        width={'28'}
+        height={'40'}
         src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
         alt={movie.title}
       />

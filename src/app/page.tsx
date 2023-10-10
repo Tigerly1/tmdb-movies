@@ -52,7 +52,6 @@ const HomePage: FC = () => {
 
     // first page, no previousPageData
     if (pageIndex === 0) return `/api/movies?page=1&sort=${sortOrder}`;
-
     // add the next page
     return `/api/movies?page=${pageIndex + 1}&sort=${sortOrder}`;
   };
