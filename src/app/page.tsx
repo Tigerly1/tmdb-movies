@@ -72,8 +72,12 @@ const HomePage: FC = () => {
   };
 
   useEffect(() => {
-    setLoading(false)
-  }, [data])
+    const savedStarredMovies = localStorage.getItem("starredMovies");
+    if (savedStarredMovies) {
+      setStarredMovies(JSON.parse(savedStarredMovies));
+    }
+    setLoading(false);
+  }, [data]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -81,7 +85,7 @@ const HomePage: FC = () => {
   }, [sortOrder, mutate]);
 
   const getMoviesPerRow = (): number => {
-    if (windowWidth >= BREAKPOINTS.XL) return 5;
+    if (windowWidth >= BREAKPOINTS.XL) return 6;
     if (windowWidth >= BREAKPOINTS.LG) return 4;
     if (windowWidth >= BREAKPOINTS.MD) return 3;
     return 2;
@@ -94,46 +98,55 @@ const HomePage: FC = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 text-center">
-        Top 500 TMDB Movies
-      </h1>
-      {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <span className="text-xl text-gray-500">Loading movies...</span>
-        </div>
-      ) : (
-        <>
-          <div className="flex justify-between mb-4">
-            <button
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition-colors"
-              onClick={() => sortMovies(SORT_ORDER.ASC)}
-            >
-              Sort ASC
-            </button>
-            <button
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition-colors"
-              onClick={() => sortMovies(SORT_ORDER.DESC)}
-            >
-              Sort DESC
-            </button>
-          </div>
-          <MovieList
-            movies={movies}
-            starredMovies={starredMovies}
-            toggleStar={toggleStar}
-            moviesPerRow={getMoviesPerRow()}
-          />
-          {isLoadingMore? null:  <button
-            disabled={isLoadingMore}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition-colors"
-            onClick={() => setSize(size + 1)}
+    <div
+      className="bg-cover h-screen w-screen bg-no-repeat"
+      style={{ backgroundImage: "url('images/backgroundImg.png')" }}
+    >
+      <div className="mx-auto  max-h-screen flex flex-col p-4">
+        <div className="flex justify-between mb-4">
+          <button
+            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700 transition-colors m-8"
+            onClick={() => sortMovies(SORT_ORDER.ASC)}
           >
-            {isLoadingMore ? "Loading..." : "Show More"}
-          </button>}
-         
-        </>
-      )}
+            Sort ASC
+          </button>
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 text-center text-white mt-8">
+            Top 500 TMDB Movies
+          </h1>
+          <button
+            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700 transition-colors m-8"
+            onClick={() => sortMovies(SORT_ORDER.DESC)}
+          >
+            Sort DESC
+          </button>
+        </div>
+
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <span className="text-xl text-gray-500">Loading movies...</span>
+          </div>
+        ) : (
+          <>
+            <div className="flex-grow overflow-y-auto">
+              <MovieList
+                movies={movies}
+                starredMovies={starredMovies}
+                toggleStar={toggleStar}
+                moviesPerRow={getMoviesPerRow()}
+              />
+            </div>
+            {isLoadingMore ? null : (
+              <button
+                disabled={isLoadingMore}
+                className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700 transition-colors mt-4"
+                onClick={() => setSize(size + 1)}
+              >
+                {isLoadingMore ? "Loading..." : "Show More"}
+              </button>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 };

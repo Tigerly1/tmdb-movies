@@ -22,7 +22,7 @@ const MovieItem: React.FC<MovieItemProps> = ({
   isRowStarred,
   toggleStar,
 }) => {
-  const cardRef = useRef(null);
+  const cardRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const animations = [
@@ -34,26 +34,26 @@ const MovieItem: React.FC<MovieItemProps> = ({
     const randomAnimation =
       animations[Math.floor(Math.random() * animations.length)];
 
-    const cardElement: any = cardRef.current;
-    
+    const cardElement: HTMLDivElement | null = cardRef.current;
+    if (cardElement === null) return;
     cardElement.style.animationName = randomAnimation;
-    cardElement.style.animationDuration = Math.random() + 's'
+    cardElement.style.animationDuration = (Math.random()) * 4 + 's'
   }, []);
 
   return (
     <div
       ref={cardRef}
-      className={`relative ${animations} flex flex-col p-4 mb-4 rounded shadow-lg hover:shadow-xl transition-shadow ${
+      className={`relative ${animations} flex flex-col  mb-4 rounded-full shadow-lg hover:shadow-2xl transition-shadow ${
         isStarred
-          ? "bg-yellow-300"
+          ? "bg-yellow-300 text-black"
           : isRowStarred
-          ? "bg-yellow-100"
-          : "bg-white"
-      } transition-transform transform ${isStarred ? "scale-105" : ""}`}
+          ? "bg-yellow-100 text-black"
+          : "bg-gray-950 text-white"
+      } transition-300 transform ${isStarred ? "scale-105" : ""}`}
     >
       {/* Star Button Positioned to the Top Right */}
       <button
-        className={`absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-transparent text-yellow-500 border border-yellow-500 rounded-full hover:bg-yellow-500 hover:text-white transition-colors ${
+        className={`absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-transparent text-yellow-500 bg-yellow-100 border border-yellow-500 rounded-full hover:bg-yellow-300 hover:text-white transition-colors ${
           isStarred ? "bg-yellow-500 text-white" : ""
         }`}
         onClick={(e) => {
@@ -66,18 +66,18 @@ const MovieItem: React.FC<MovieItemProps> = ({
 
       {/* Rest of the card content */}
       <Image
-        className="w-28 h-40 mb-4 mx-auto rounded shadow"
-        width={'28'}
-        height={'40'}
+        className="w-full h-52 rounded shadow"
+        width={'200'}
+        height={'100'}
         src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
         alt={movie.title}
       />
-      <h2 className="text-lg h-14 md:text-xl font-semibold mb-2 text-center max-h-20 overflow-hidden">
+      <h2 className="text-lg h-14 md:text-l font-semibold mb-2 text-center max-h-20 overflow-hidden">
         {movie.title}
       </h2>
       <p className="mt-1 text-center"> Rating: {movie.vote_average} 🌟</p>
       <p className="text-center mb-4">
-        Year: {new Date(movie.release_date).getFullYear()} 📅
+       Year: {new Date(movie.release_date).getFullYear()} 
       </p>
     </div>
   );
