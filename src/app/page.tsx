@@ -44,6 +44,9 @@ const HomePage: FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [sortOrder, setSortOrder] = useState<keyof typeof SORT_ORDER>("DESC");
 
+  const [loadMoreRef, setLoadMoreRef] = useState<null | HTMLElement>(null);
+
+
   const windowWidth = useWindowWidth();
 
   const getKey = (pageIndex: number, previousPageData: Movie[]) => {
@@ -91,6 +94,33 @@ const HomePage: FC = () => {
     return 2;
   };
 
+  useEffect(() => {
+    if (loadMoreRef && !isLoadingMore) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          console.log(entries)
+          if (entries[0].isIntersecting) {
+            console.log("teeest")
+            setSize((prevSize) => prevSize + 1);
+          }
+        },
+        {
+          rootMargin: "0px 0px 15px 0px",
+        }
+      );
+  
+      observer.observe(loadMoreRef);
+  
+      return () => {
+        observer.unobserve(loadMoreRef);
+      };
+    }
+  }, [loadMoreRef, setSize, isLoadingMore]);
+  
+    // In your MovieList component
+  // ... inside your render method, to the last movie element:
+
+
   const toggleStar = (id: number) => {
     const newStarred = { ...starredMovies, [id]: !starredMovies[id] };
     setStarredMovies(newStarred);
@@ -105,7 +135,7 @@ const HomePage: FC = () => {
       <div className="mx-auto  max-h-screen flex flex-col p-4">
         <div className="flex justify-between mb-4">
           <button
-            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700 transition-colors m-8"
+            className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-800 transition-colors m-8"
             onClick={() => sortMovies(SORT_ORDER.ASC)}
           >
             Sort ASC
@@ -114,7 +144,7 @@ const HomePage: FC = () => {
             Top 500 TMDB Movies
           </h1>
           <button
-            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700 transition-colors m-8"
+            className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-800 transition-colors m-8"
             onClick={() => sortMovies(SORT_ORDER.DESC)}
           >
             Sort DESC
@@ -133,17 +163,18 @@ const HomePage: FC = () => {
                 starredMovies={starredMovies}
                 toggleStar={toggleStar}
                 moviesPerRow={getMoviesPerRow()}
+                setLoadMoreRef = {setLoadMoreRef}
               />
             </div>
-            {isLoadingMore ? null : (
+            {/* {isLoadingMore ? null : (
               <button
                 disabled={isLoadingMore}
-                className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700 transition-colors mt-4"
+                className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-900 transition-colors mt-4"
                 onClick={() => setSize(size + 1)}
               >
-                {isLoadingMore ? "Loading..." : "Show More"}
+                {isLoadingMore ? "Loading..." : "Load More"}
               </button>
-            )}
+            )} */}
           </>
         )}
       </div>
