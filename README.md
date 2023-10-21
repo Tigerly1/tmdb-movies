@@ -25,6 +25,13 @@ Integrate a "star" icon next to each movie.
 🌑 Re-clicking removes the highlight, reverting to the original state.
 🍪 User's "starred" preferences should persist (via cookies or local storage).
 
+## Tech stack used
+
+- Next.js 13 with typescript
+- Tailwind CSS
+- SWR
+- Caching
+
 
 
 ## Project setup
