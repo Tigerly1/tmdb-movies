@@ -1,15 +1,18 @@
 "use client";
 
 import { useEffect, useState, FC } from "react";
-import MovieList from "../components/MovieList";
+import MovieList from "../components/movie/MovieList";
 import "../app/globals.css";
 import useWindowWidth from "@/helpers/highlights/MoviesInRow";
 import axios from "axios";
 import fetcher from "@/helpers/network/fetcher";
 import useSWR, { mutate } from "swr";
 import useSWRInfinite from "swr/infinite";
+import LoadingComponent from "@/components/loading/Loading";
+
 
 const BREAKPOINTS = {
+  SM: 640,
   MD: 768,
   LG: 1024,
   XL: 1280,
@@ -29,13 +32,6 @@ interface Movie {
 
 interface StarredMovies {
   [key: number]: boolean;
-}
-
-interface MovieListProps {
-  movies: Movie[];
-  starredMovies: StarredMovies;
-  toggleStar: (id: number) => void;
-  moviesPerRow: number;
 }
 
 const HomePage: FC = () => {
@@ -64,7 +60,7 @@ const HomePage: FC = () => {
     fetcher
   );
 
-  const movies = data ? [].concat(...data) : [];
+  const MOVIES = data ? [].concat(...data) : [];
   const isLoadingInitialData = !data && !error;
   const isLoadingMore =
     isLoadingInitialData ||
@@ -89,8 +85,9 @@ const HomePage: FC = () => {
 
   const getMoviesPerRow = (): number => {
     if (windowWidth >= BREAKPOINTS.XL) return 6;
-    if (windowWidth >= BREAKPOINTS.LG) return 4;
-    if (windowWidth >= BREAKPOINTS.MD) return 3;
+    if (windowWidth >= BREAKPOINTS.LG) return 5;
+    if (windowWidth >= BREAKPOINTS.MD) return 4;
+    if (windowWidth >= BREAKPOINTS.SM) return 3
     return 2;
   };
 
@@ -98,9 +95,7 @@ const HomePage: FC = () => {
     if (loadMoreRef && !isLoadingMore) {
       const observer = new IntersectionObserver(
         (entries) => {
-          console.log(entries)
           if (entries[0].isIntersecting) {
-            console.log("teeest")
             setSize((prevSize) => prevSize + 1);
           }
         },
@@ -117,10 +112,6 @@ const HomePage: FC = () => {
     }
   }, [loadMoreRef, setSize, isLoadingMore]);
   
-    // In your MovieList component
-  // ... inside your render method, to the last movie element:
-
-
   const toggleStar = (id: number) => {
     const newStarred = { ...starredMovies, [id]: !starredMovies[id] };
     setStarredMovies(newStarred);
@@ -128,6 +119,7 @@ const HomePage: FC = () => {
   };
 
   return (
+
     <div
       className="bg-cover h-screen w-screen bg-no-repeat"
       style={{ backgroundImage: "url('images/backgroundImg.png')" }}
@@ -153,32 +145,24 @@ const HomePage: FC = () => {
 
         {loading ? (
           <div className="flex justify-center items-center h-64">
-            <span className="text-xl text-gray-500">Loading movies...</span>
+            <LoadingComponent/>
           </div>
         ) : (
           <>
-            <div className="flex-grow overflow-y-auto">
+            <div className="flex-grow overflow-y-auto ">
               <MovieList
-                movies={movies}
+                movies={MOVIES}
                 starredMovies={starredMovies}
                 toggleStar={toggleStar}
                 moviesPerRow={getMoviesPerRow()}
                 setLoadMoreRef = {setLoadMoreRef}
               />
             </div>
-            {/* {isLoadingMore ? null : (
-              <button
-                disabled={isLoadingMore}
-                className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-900 transition-colors mt-4"
-                onClick={() => setSize(size + 1)}
-              >
-                {isLoadingMore ? "Loading..." : "Load More"}
-              </button>
-            )} */}
           </>
         )}
       </div>
     </div>
+
   );
 };
 

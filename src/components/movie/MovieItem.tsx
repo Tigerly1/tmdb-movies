@@ -12,7 +12,7 @@ interface MovieItemProps {
   isStarred: boolean;
   isRowStarred: boolean; // new prop to determine if any movie in the row is starred
   toggleStar: (id: number) => void;
-  setLoadMoreRef?: any
+  setLoadMoreRef?: any;
 }
 
 const animations: string =
@@ -46,12 +46,11 @@ const MovieItem: React.FC<MovieItemProps> = ({
     <div
       ref={(el) => {
         cardRef.current = el;
-        if(setLoadMoreRef != null){
-          console.log(setLoadMoreRef)
-          setLoadMoreRef(el)
+        if (setLoadMoreRef != null) {
+          setLoadMoreRef(el);
         }
       }}
-      className={`relative ${animations} flex flex-col  mb-4 rounded-full shadow-lg hover:shadow-2xl transition-shadow ${
+      className={`relative ${animations} bg-primary flex flex-col w-44 mb-4 rounded-full shadow-lg hover:shadow-2xl transition-shadow ${
         isStarred
           ? "bg-yellow-300 text-black"
           : isRowStarred
@@ -61,7 +60,7 @@ const MovieItem: React.FC<MovieItemProps> = ({
     >
       {/* Star Button Positioned to the Top Right */}
       <button
-        className={`absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-transparent text-yellow-500 bg-yellow-100 border border-yellow-500 rounded-full hover:bg-yellow-300 hover:text-white transition-colors ${
+        className={`absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-transparent text-yellow-500 bg-gray-100 border border-yellow-500 rounded-full hover:bg-yellow-300 hover:text-white transition-colors ${
           isStarred ? "bg-yellow-500 text-white" : ""
         }`}
         onClick={(e) => {
@@ -74,11 +73,15 @@ const MovieItem: React.FC<MovieItemProps> = ({
 
       {/* Rest of the card content */}
       <Image
-        className="w-full h-52 rounded shadow"
+        className="w-full h-44 rounded shadow"
+        style={{ cursor: "pointer" }}
         width={"200"}
-        height={"100"}
+        height={"80"}
         src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
         alt={movie.title}
+        onClick={() => {
+          window.open(`https://www.themoviedb.org/movie/${movie.id}`, "_blank");
+        }}
       />
       <h2 className="text-lg h-14 md:text-l font-semibold mb-2 text-center max-h-20 overflow-hidden">
         {movie.title}

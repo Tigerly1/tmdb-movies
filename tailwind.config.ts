@@ -7,7 +7,7 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {
+    
       keyframes: {
         slideFromTopLeft: {
           "0%": { transform: "translate(-100%, -100%)" },
@@ -38,7 +38,7 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
     },
-  },
+  
   plugins: [],
 };
 export default config;

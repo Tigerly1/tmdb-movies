@@ -1,8 +1,37 @@
-# TMDB MOVIES TASK
+# 🎬 Top 500 Movies Display from TMDB
+## Objective
+### Develop an interface to showcase the top 500 movies from The Movie Database (TMDB).
 
-- Show top 500 movies in TMDB;
-- Display for each movie: image, title, current rating, year;
-- Each of the movies should link to the TMDB listing;
-- You should be able to sort in order (ASC / DESC)
-- You will use whatever styling you think is best. No design provided, however, you must make sure it looks good in desktop and mobile.
- - Each of the movies needs a “star” icon. Once clicked, it should highlight (change the background color) of the entire row. Re-clicking the star should de-highlight the row back to original state. This setting should persist (cookie/local storage).
+## 🌟 Core Features
+1. Movies Listing
+Display the top 500 movies sourced from TMDB.
+For each movie, present the following details:
+Image: A visual representation or poster of the movie.
+Title: The name of the movie.
+Current Rating: The current user rating or score for the movie on TMDB.
+Year: The release year of the movie.
+Every movie entry should be clickable and direct the user to its respective listing on TMDB.
+2. Sorting Mechanism
+Provide options to sort the movie list in both:
+📈 Ascending (ASC) order
+📉 Descending (DESC) order
+3. Responsive Design
+Implement a design that's:
+💡 Developer's choice, ensuring it aligns with good aesthetics.
+🖥️ Optimized for both desktop and mobile viewing.
+4. Star Feature
+Integrate a "star" icon next to each movie.
+⭐ Clicking the star should highlight the row, indicating a favorite.
+🌑 Re-clicking removes the highlight, reverting to the original state.
+🍪 User's "starred" preferences should persist (via cookies or local storage).
+
+
+
+## Project setup
+
+Create account at tmdb movies and get api key from there and put it in .env file
+
+```
+npm install
+npm run dev
+```

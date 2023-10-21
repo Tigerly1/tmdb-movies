@@ -20,7 +20,7 @@ const MovieList: React.FC<MovieListProps> = ({
   const movieSetForObserver = movies[movies.length - 10];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+    <div className="max-w-6xl grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mx-auto">
       {movies.map((movie, index) => (
         <MovieItem
           key={movie.id}

@@ -16,7 +16,6 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const SORT = searchParams.get("sort") ?? "DESC";
   const index = Number(searchParams.get("page") ?? 0);
-  console.log(index);
   const SORT_ORDER = SORT === "DESC" ? "desc" : "asc";
   try {
     const results = await axios.get(
